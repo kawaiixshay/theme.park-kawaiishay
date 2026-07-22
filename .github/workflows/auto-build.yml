@@ -68,7 +68,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           branch=${{ steps.extract_branch.outputs.branch }}
-
+          REPO=${GITHUB_REPOSITORY,,}
           if [ "$branch" = "master" ]; then
             branch=""
           else
@@ -77,21 +77,22 @@ jobs:
           for dir in docker-mods/*; 
           do 
             app="$( echo "$dir" | cut -d'/' -f2 -s )"
-            docker build docker-mods/$app --tag ${IMAGE}:$app$branch
-            docker push ${IMAGE}:$app$branch
+            docker build docker-mods/$app --tag ghcr.io/${REPO}:$app$branch
+            docker push ghcr.io/${REPO}:$app$branch
           done
       - name: manually build
         if: ${{ github.event.inputs.app && github.event.inputs.app != 'build-all-the-mods' }}
         run: |
-          IMAGE=${{ matrix.registry }}/${GITHUB_REPOSITORY,,}
-          docker build docker-mods/${{ github.event.inputs.app }} --tag ${IMAGE}:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
-          docker push ${IMAGE}:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
+          REPO=${GITHUB_REPOSITORY,,}
+          docker build docker-mods/${{ github.event.inputs.app }} --tag ghcr.io/${REPO}:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
+          docker push ghcr.io/${REPO}:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
       - name: manually build all mods
         if: ${{ github.event.inputs.app == 'build-all-the-mods' }}
         run: |
+          REPO=${GITHUB_REPOSITORY,,}
           for dir in docker-mods/*; 
           do 
             app="$( echo "$dir" | cut -d'/' -f2 -s )"
-            docker build docker-mods/$app --tag ${IMAGE}:$app${{ github.event.inputs.append-tag }}
-            docker push ${IMAGE}:$app${{ github.event.inputs.append-tag }}
+            docker build docker-mods/$app --tag ghcr.io/${REPO}:$app${{ github.event.inputs.append-tag }}
+            docker push ghcr.io/${REPO}:$app${{ github.event.inputs.append-tag }}
           done
