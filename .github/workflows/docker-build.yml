@@ -40,7 +40,7 @@ jobs:
           echo "title=${GITHUB_REPOSITORY,,}:${{ github.ref_name }}" >> $GITHUB_ENV
           echo "revision=${GITHUB_SHA}" >> $GITHUB_ENV
           echo "source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY,,}/tree/${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "vendor=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "vendor=${{ secrets.GH_ORG }}" >> $GITHUB_ENV
           echo "url=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY,,}/blob/master/README.md" >> $GITHUB_ENV
           echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
           echo "cache=${GITHUB_REPOSITORY,,}:${{ github.ref_name }}-cache-${{ matrix.architecture }}${{ github.event.inputs.tag }}" >> $GITHUB_ENV
@@ -62,7 +62,7 @@ jobs:
         uses: docker/login-action@v3.4.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ secrets.GH_ORG }}
           password: ${{ secrets.GH_PAT }}
 
       - name: build&push
@@ -103,7 +103,7 @@ jobs:
         uses: docker/login-action@v3.4.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ secrets.GH_ORG }}
           password: ${{ secrets.GH_PAT }}
 
       - name: Set Image and Tag Env
