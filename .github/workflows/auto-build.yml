@@ -77,20 +77,21 @@ jobs:
           for dir in docker-mods/*; 
           do 
             app="$( echo "$dir" | cut -d'/' -f2 -s )"
-            docker build docker-mods/$app --tag ghcr.io/${{ vars.GH_ORG }}/theme.park:$app$branch
-            docker push ghcr.io/${{ vars.GH_ORG }}/theme.park:$app$branch
+            docker build docker-mods/$app --tag ${IMAGE}:$app$branch
+            docker push ${IMAGE}:$app$branch
           done
       - name: manually build
         if: ${{ github.event.inputs.app && github.event.inputs.app != 'build-all-the-mods' }}
         run: |
-          docker build docker-mods/${{ github.event.inputs.app }} --tag ghcr.io/${{ vars.GH_ORG }}/theme.park:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
-          docker push ghcr.io/${{ vars.GH_ORG }}/theme.park:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
+          IMAGE=${{ matrix.registry }}/${GITHUB_REPOSITORY,,}
+          docker build docker-mods/${{ github.event.inputs.app }} --tag ${IMAGE}:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
+          docker push ${IMAGE}:${{ github.event.inputs.app }}${{ github.event.inputs.append-tag }}
       - name: manually build all mods
         if: ${{ github.event.inputs.app == 'build-all-the-mods' }}
         run: |
           for dir in docker-mods/*; 
           do 
             app="$( echo "$dir" | cut -d'/' -f2 -s )"
-            docker build docker-mods/$app --tag ghcr.io/${{ vars.GH_ORG }}/theme.park:$app${{ github.event.inputs.append-tag }}
-            docker push ghcr.io/${{ vars.GH_ORG }}/theme.park:$app${{ github.event.inputs.append-tag }}
+            docker build docker-mods/$app --tag ${IMAGE}:$app${{ github.event.inputs.append-tag }}
+            docker push ${IMAGE}:$app${{ github.event.inputs.append-tag }}
           done
