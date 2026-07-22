@@ -24,6 +24,9 @@ on:
 jobs:
   build-and-push-it-to-the-limit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         architecture: [linux-amd64,linux-arm64]
